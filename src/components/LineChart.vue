@@ -7,15 +7,28 @@
                     inset
                     vertical
             ></v-divider>
-            <v-spacer></v-spacer>
-            <v-select
-                    :items="vmConf"
-                    item-text="name"
-                    item-value="id"
-                    single-line
-                    label="Script"
-            ></v-select>
-            <v-spacer></v-spacer>
+            <v-row>
+                <v-col>
+                    <v-select
+                            v-model="graphReqItem.vm_id"
+                            :items="vmDict"
+                            item-text=ip
+                            item-value=vm_id
+                            single-line
+                            label="IP Address"
+                    ></v-select>
+                </v-col>
+                <v-col>
+                    <v-select
+                            v-model="graphReqItem.script_id"
+                            :items="scriptsDict"
+                            item-text=name
+                            item-value=script_id
+                            single-line
+                            label="Script Name"
+                    ></v-select>
+                </v-col>
+            </v-row>
             <v-btn color="blue darken-1" text @click="fillData">Show Graph</v-btn>
             <v-btn color="blue darken-1" text @click="closeGraph">Close Graph</v-btn>
         </v-toolbar>
@@ -27,12 +40,20 @@
     import { mapGetters } from "vuex"
     import { FETCH_GRAPH, FETCH_VMCONF } from "../store/actions.type"
     import Chart from 'chart.js';
+    const timeFormat = 'MM/DD/YYYY HH:mm';
 
     export default {
         data () {
             return {
-                datacollection: null,
-                chart: null
+                chart: null,
+                graphReqItem: {
+                    vm_id: '',
+                    script_id: '',
+                },
+                defReqItem: {
+                    vm_id: '',
+                    script_id: '',
+                }
             }
         },
         mounted () {
@@ -40,8 +61,9 @@
         },
         methods: {
             fillData () {
-                const vmId = 1;
-                const scriptId = 5;
+                //todo validations
+                let vmId = this.graphReqItem.vm_id;
+                let scriptId = this.graphReqItem.script_id;
                 this.$store.dispatch(FETCH_GRAPH, { vmId, scriptId }).then(() =>
                     this.createGraph()
                 ).catch((e) => alert("Что-то пошло не так" + e))
@@ -51,6 +73,7 @@
                 this.$store.dispatch(FETCH_VMCONF);
             },
             closeGraph () {
+                this.graphReqItem = this.defReqItem
                 if (this.chart) {
                     this.chart.clear()
                 }
@@ -58,17 +81,15 @@
             getGraphValues(){
                 this.graphItems.forEach(
                     item => {
-                    item.datetime = new Date(item.datetime)})
+                    item.datetime = new Date(item.datetime).format(timeFormat)});
                 return this.graphItems;
             },
             createGraph() {
                 this.chart = new Chart(this.$refs.myChart, {
                     type: 'line',
                     data: {
-                        // labels: 'Series',
-                        //labels: [1590624929473, 1590625285201, 1590625295211, 1590625305198],
                         datasets: [{
-                            label: 'Line Dataset',
+                            fill: false,
                             data: this.getGraphValues,
                             // backgroundColor: [
                             //     'rgba(255, 99, 132, 0.2)',
@@ -89,38 +110,63 @@
                             // borderWidth: 1
                         }]
                     },
+                    // options: {
+                    //     scales: {
+                    //         xAxes: [{
+                    //             type: 'time',
+                    //             // distribution: 'series',
+                    //             // distribution: 'linear',
+                    //             // position: 'bottom',
+                    //             time: {
+                    //                 // unit: 'hour',
+                    //                 // format: 'timeFormat'
+                    //                 // displayFormats: {
+                    //                 //     minute: 'h:mm a'
+                    //                 // }
+                    //             },
+                    //             // offset: true,
+                    //             // stacked: true
+                    //         }],
+                    //         yAxes: [{
+                    //             type: 'linear',
+                    //             position: 'left',
+                    //             beginAtZero: false,
+                    //             distribution: 'linear',
+                    //             // stacked: true
+                    //         }]
+                    //     }
+                    // }
                     options: {
+                        title: {
+                            text: 'Chart.js Time Scale'
+                        },
                         scales: {
-                            xAxes: [{
+                            x: {
                                 type: 'time',
-                                // distribution: 'series',
-                                // distribution: 'linear',
-                                // position: 'bottom',
                                 time: {
-                                    // unit: 'hour',
-                                    // format: 'timeFormat'
-                                    // displayFormats: {
-                                    //     minute: 'h:mm a'
-                                    // }
+                                    parser: timeFormat,
+                                    // round: 'day'
+                                    tooltipFormat: 'll HH:mm'
                                 },
-                                // offset: true,
-                                // stacked: true
-                            }],
-                            yAxes: [{
-                                type: 'linear',
-                                position: 'left',
-                                beginAtZero: false,
-                                distribution: 'linear',
-                                // stacked: true
-                            }]
-                        }
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Date'
+                                }
+                            },
+                            y: {
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'value'
+                                }
+                            }
+                        },
                     }
                 });
             }
 
         },
         computed: {
-            ...mapGetters(["graphItems", "vmConf"]),
+            ...mapGetters(["graphItems", "vmDict", "scriptsDict"]),
         },
         beforeDestroy () {
             this.closeGraph()

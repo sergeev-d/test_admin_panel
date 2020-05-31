@@ -1,6 +1,5 @@
 <template>
     <div>
-<!--        <h1>VM</h1>-->
         <v-m-container></v-m-container>
     </div>
 </template>

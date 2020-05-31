@@ -6,6 +6,7 @@ import vm from "./module/vm.module"
 import script from "./module/script.module"
 import vmconf from "./module/vmconf.module"
 import graph from "./module/graph.module"
+import user from "./module/user.module"
 
 Vue.use(Vuex);
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
         vm,
         script,
         vmconf,
-        graph
+        graph,
+        user
     }
 });

@@ -142,18 +142,16 @@
             },
 
             deleteScriptItem(vmId) {
-                this.$store.dispatch(DELETE_VM_ITEM, vmId);
-                this.fetchVM()
+                this.$store.dispatch(DELETE_VM_ITEM, vmId).then(() => this.fetchVM());
+
             },
 
             addScriptItem(vmItem) {
-                this.$store.dispatch(ADD_VM_ITEM, vmItem);
-                this.fetchVM()
+                this.$store.dispatch(ADD_VM_ITEM, vmItem).then(() => this.fetchVM());
             },
 
             changeScriptItem(vmItem, vmId) {
-                this.$store.dispatch(CHANGE_VM_ITEM, {vmItem, vmId});
-                this.fetchVM()
+                this.$store.dispatch(CHANGE_VM_ITEM, {vmItem, vmId}).then(() => this.fetchVM());
             },
 
             editItem (item) {

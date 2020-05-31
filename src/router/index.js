@@ -26,7 +26,7 @@ export default new Router({
                 {
                     name: "users",
                     path: "users",
-                    component: () => import("@/views/NotFound"),
+                    component: () => import("@/views/AdminUsers"),
                     props: true
                 },
                 {

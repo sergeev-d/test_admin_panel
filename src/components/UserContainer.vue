@@ -1,13 +1,13 @@
 <template>
     <v-data-table
             :headers="headers"
-            :items="scriptItems"
+            :items="userItems"
             sort-by="Script name"
             class="elevation-1"
     >
         <template v-slot:top>
             <v-toolbar flat color="white">
-                <v-toolbar-title>Script Items</v-toolbar-title>
+                <v-toolbar-title>Users</v-toolbar-title>
                 <v-divider
                         class="mx-4"
                         inset
@@ -15,9 +15,9 @@
                 ></v-divider>
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="600px">
-                    <template v-slot:activator="{ on }">
-                        <v-btn color="primary" dark class="mb-2" v-on="on">New Script</v-btn>
-                    </template>
+<!--                    <template v-slot:activator="{ on }">-->
+<!--                        <v-btn color="primary" dark class="mb-2" v-on="on">New User</v-btn>-->
+<!--                    </template>-->
                     <v-card>
                         <v-card-title>
                             <span class="headline">{{ formTitle }}</span>
@@ -27,22 +27,17 @@
                             <v-container>
                                 <v-row>
                                     <v-col cols="24" sm="16" md="12">
-                                        <v-text-field v-model="editedItem.name" label="Script Name"></v-text-field>
+                                        <v-text-field v-model="editedItem.login" label="User"></v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
                                     <v-col cols="24" sm="16" md="12">
-                                        <v-text-field v-model="editedItem.script_body" label="Script"></v-text-field>
+                                        <v-text-field v-model="editedItem.user_id" label="User Id"></v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
                                     <v-col cols="24" sm="16" md="12">
-                                        <v-textarea v-model="editedItem.description" label="Description"></v-textarea>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col cols="24" sm="16" md="12">
-                                        <v-textarea v-model="editedItem.recommendations" label="Recommendation"></v-textarea>
+                                        <v-textarea v-model="editedItem.role_name" label="Role Name"></v-textarea>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -58,13 +53,13 @@
             </v-toolbar>
         </template>
         <template v-slot:item.actions="{ item }">
-            <v-icon
-                    small
-                    class="mr-2"
-                    @click="editItem(item)"
-            >
-                mdi-pencil
-            </v-icon>
+<!--            <v-icon-->
+<!--                    small-->
+<!--                    class="mr-2"-->
+<!--                    @click="editItem(item)"-->
+<!--            >-->
+<!--                mdi-pencil-->
+<!--            </v-icon>-->
             <v-icon
                     small
                     @click="deleteItem(item)"
@@ -73,51 +68,50 @@
             </v-icon>
         </template>
         <template v-slot:no-data>
-            <v-btn color="primary" @click="fetchScripts">Reset</v-btn>
+            <v-btn color="primary" @click="fetchUsers">Reset</v-btn>
         </template>
     </v-data-table>
 </template>
 
 <script>
     import { mapGetters } from "vuex"
-    import { FETCH_SCRIPT, DELETE_SCRIPT_ITEM, ADD_SCRIPT_ITEM, CHANGE_SCRIPT_ITEM } from "../store/actions.type"
+    import { FETCH_USER, DELETE_USER_ITEM } from "../store/actions.type"
 
     export default {
         data: () => ({
             dialog: false,
             headers: [
                 {
-                    text: 'Script name',
+                    text: 'User',
                     align: 'start',
                     sortable: false,
-                    value: 'name',
+                    value: 'login',
                 },
-                { text: 'Script', value: 'script_body' },
-                { text: 'Description', value: 'description' },
-                { text: 'Recommendation', value: 'recommendations' },
+                { text: 'User ID', value: 'user_id' },
+                { text: 'Role Name', value: 'role_name' },
+                { text: 'Status', value: 'user_status' },
                 { text: 'Actions', value: 'actions', sortable: false },
             ],
-            scriptTestItems: [],
             editedIndex: -1,
             editedItem: {
-                name: '',
-                script_body: '',
-                description: '',
-                recommendations: ''
+                login: '',
+                user_id: 0,
+                role_name: '',
+                user_status: '',
             },
             defaultItem: {
-                name: '',
-                script_body: '',
-                description: '',
-                recommendations: ''
+                login: '',
+                user_id: 0,
+                role_name: '',
+                user_status: '',
             },
         }),
 
         computed: {
-            ...mapGetters(["scriptItems"]),
+            ...mapGetters(["userItems"]),
 
             formTitle () {
-                return this.editedIndex === -1 ? 'New Script' : 'Edit Script'
+                return this.editedIndex === -1 ? 'New User' : 'Edit User'
             },
         },
 
@@ -127,40 +121,37 @@
             },
         },
 
-        // created () {
-        //     this.initialize()
-        // },
 
         mounted() {
-            this.fetchScripts();
+            this.fetchUsers();
         },
 
         methods: {
-            fetchScripts () {
-                this.$store.dispatch(FETCH_SCRIPT);
+            fetchUsers () {
+                this.$store.dispatch(FETCH_USER);
             },
 
-            deleteScriptItem(scriptItem) {
-                this.$store.dispatch(DELETE_SCRIPT_ITEM, scriptItem).then(() => this.fetchScripts());
+            deleteUserItem(userId) {
+                this.$store.dispatch(DELETE_USER_ITEM, userId).then(() => this.fetchUsers());
             },
+            //
+            // addScriptItem(scriptItem) {
+            //     this.$store.dispatch(ADD_SCRIPT_ITEM, scriptItem).then(() => this.fetchScripts());
+            // },
+            //
+            // changeScriptItem(scriptItem, scriptId) {
+            //     this.$store.dispatch(CHANGE_SCRIPT_ITEM, {scriptItem, scriptId}).then(() => this.fetchScripts());
+            // },
 
-            addScriptItem(scriptItem) {
-                this.$store.dispatch(ADD_SCRIPT_ITEM, scriptItem).then(() => this.fetchScripts());
-            },
-
-            changeScriptItem(scriptItem, scriptId) {
-                this.$store.dispatch(CHANGE_SCRIPT_ITEM, {scriptItem, scriptId}).then(() => this.fetchScripts());
-            },
-
-            editItem (item) {
-                this.editedIndex = this.scriptItems.indexOf(item);
-                this.editedItem = Object.assign({}, item);
-                this.dialog = true
-            },
-
+            // editItem (item) {
+            //     this.editedIndex = this.scriptItems.indexOf(item);
+            //     this.editedItem = Object.assign({}, item);
+            //     this.dialog = true
+            // },
+            //
             deleteItem (item) {
                 confirm('Are you sure you want to delete this item?');
-                this.deleteScriptItem(item.script_id)
+                this.deleteUserItem(item.user_id)
             },
 
             close () {
@@ -173,7 +164,7 @@
 
             save () {
                 if (this.editedIndex > -1) {
-                    this.changeScriptItem(this.editedItem, this.scriptItems[this.editedIndex].script_id)
+                    this.changeScriptItem(this.editedItem, this.scriptItems[this.editedIndex].user_id)
                 } else {
                     this.addScriptItem(this.editedItem)
                 }

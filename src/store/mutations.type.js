@@ -2,6 +2,7 @@
 export const FETCH_END = "setData";
 export const FETCH_START = "setLoading";
 export const FETCH_VM_CONF_END = "setVMConfData";
+export const FETCH_USER_END = "serUserData";
 
 //auth
 export const SET_AUTH = "login";

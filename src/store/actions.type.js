@@ -13,6 +13,9 @@ export const DELETE_VMCONF_ITEM = "deleteVMConf";
 export const ADD_VMCONF_ITEM = "addVMConf";
 export const CHANGE_VMCONF_ITEM = "changeVMConf";
 
+export const FETCH_USER = "fetchUsers";
+export const DELETE_USER_ITEM = "deleteUser";
+
 export const FETCH_GRAPH = "fetchGraph";
 
 export const LOGIN = "login";
