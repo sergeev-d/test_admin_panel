@@ -32,7 +32,7 @@
             <v-btn color="blue darken-1" text @click="fillData">Show Graph</v-btn>
             <v-btn color="blue darken-1" text @click="closeGraph">Close Graph</v-btn>
         </v-toolbar>
-        <canvas ref="myChart" :width=1000 :height=1000></canvas>
+        <canvas ref="myChart" width=800px height=600px></canvas>
     </div>
 </template>
 
@@ -56,9 +56,19 @@
                 }
             }
         },
+
         mounted () {
             this.getVMConf();
         },
+
+        computed: {
+            ...mapGetters(["graphItems", "vmDict", "scriptsDict"]),
+        },
+
+        beforeDestroy () {
+            this.closeGraph()
+        },
+
         methods: {
             fillData () {
                 //todo validations
@@ -69,45 +79,81 @@
                 ).catch((e) => alert("Что-то пошло не так" + e))
 
             },
+
             getVMConf () {
                 this.$store.dispatch(FETCH_VMCONF);
             },
+
             closeGraph () {
-                this.graphReqItem = this.defReqItem
+                this.graphReqItem = this.defReqItem;
                 if (this.chart) {
                     this.chart.clear()
                 }
             },
-            getGraphValues(){
-                this.graphItems.forEach(
-                    item => {
-                    item.datetime = new Date(item.datetime).format(timeFormat)});
-                return this.graphItems;
+
+            createValues(){
+                let temp = [];
+                this.graphItems.forEach((item) => {
+                    let v_item = {};
+                    v_item.x = this.formatDate(item.datetime);
+                    v_item.y = item.value;
+                    temp.push(v_item);
+                });
+                return temp;
             },
+
+            createLabels(){
+                let temp = [];
+                this.graphItems.forEach((item) => {
+                    temp.push(this.formatDate(item.datetime));
+                });
+                return temp;
+            },
+
+            formatDate(date){
+                    let d = new Date(date),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear(),
+                        hour = d.getHours(),
+                        minute = d.getMinutes();
+
+
+
+                    if (month.length < 2)
+                        month = '0' + month;
+                    if (day.length < 2)
+                        day = '0' + day;
+
+                    return [year, month, day].join('/')+' '+hour+':'+minute;
+            },
+
             createGraph() {
                 this.chart = new Chart(this.$refs.myChart, {
                     type: 'line',
                     data: {
+                        labels: this.createLabels(),
                         datasets: [{
+                            label: 'Graph',
                             fill: false,
-                            data: this.getGraphValues,
-                            // backgroundColor: [
-                            //     'rgba(255, 99, 132, 0.2)',
-                            //     'rgba(54, 162, 235, 0.2)',
-                            //     'rgba(255, 206, 86, 0.2)',
-                            //     'rgba(75, 192, 192, 0.2)',
-                            //     'rgba(153, 102, 255, 0.2)',
-                            //     'rgba(255, 159, 64, 0.2)'
-                            // ],
-                            // borderColor: [
-                            //     'rgba(255, 99, 132, 1)',
-                            //     'rgba(54, 162, 235, 1)',
-                            //     'rgba(255, 206, 86, 1)',
-                            //     'rgba(75, 192, 192, 1)',
-                            //     'rgba(153, 102, 255, 1)',
-                            //     'rgba(255, 159, 64, 1)'
-                            // ],
-                            // borderWidth: 1
+                            data: this.createValues(),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
                         }]
                     },
                     // options: {
@@ -163,15 +209,7 @@
                     }
                 });
             }
-
-        },
-        computed: {
-            ...mapGetters(["graphItems", "vmDict", "scriptsDict"]),
-        },
-        beforeDestroy () {
-            this.closeGraph()
         }
-
     }
 </script>
 
