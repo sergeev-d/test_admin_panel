@@ -10,42 +10,63 @@ export default new Router({
             path: "/", //localhost:8080
             redirect: "about",
             component: () => import("@/views/MainView"), // todo main slit into admin/user panel
+            meta: {
+                requiresAuth: true
+            },
             children: [
                 {
                     path: "scripts",
                     name: "scripts",
                     component: () => import("@/views/AdminScript"),
                     props: true,
+                    meta: {
+                        requiresAuth: true
+                    }
                 },
                 {
                     path: "vm",
                     name: "vm",
                     component: () => import("@/views/AdminVM"),
-                    props: true
+                    props: true,
+                    meta: {
+                        requiresAuth: true
+                    }
                 },
                 {
                     name: "users",
                     path: "users",
                     component: () => import("@/views/AdminUsers"),
-                    props: true
+                    props: true,
+                    meta: {
+                        requiresAuth: true
+                    }
                 },
                 {
                     name: "about",
                     path: "about",
                     component: () => import("@/views/About"),
-                    props: true
+                    props: true,
+                    meta: {
+                        requiresAuth: true
+                    }
                 },
                 {
                     name: "configuration",
                     path: "configuration",
                     component: () => import("@/views/UserVM"),
-                    props: true
+                    props: true,
+                    meta: {
+                        requiresAuth: true
+                    }
                 },
                 {
                     name: "charts",
                     path: "charts",
                     component: () => import("@/views/UserCharts"),
-                    props: true
+                    props: true,
+                    meta: {
+                        requiresAuth: true
+                    }
                 }
             ]
         },

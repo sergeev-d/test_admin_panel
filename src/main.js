@@ -8,7 +8,7 @@ import VueCharts from 'vue-chartjs'
 import 'vuetify/dist/vuetify.min.css'
 
 import ApiService from "./common/api.service";
-// import {CHECK_AUTH} from "./store/actions.type";
+import {CHECK_AUTH} from "./store/actions.type";
 
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);
@@ -18,9 +18,20 @@ Vue.use(VueCharts);
 const vuetifyOptions = { }
 ApiService.init();
 
-// router.beforeEach((to, from, next) =>
-//     Promise.all([store.dispatch(CHECK_AUTH)]).then(next)
-// );
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)){
+    Promise.all([store.dispatch(CHECK_AUTH)]).then(() => {
+      if (store.getters.isAuthenticated) {
+        console.log("isAuthenticated")
+        next();
+        return
+      }
+      next('/login')
+    })
+  } else {
+    next();
+  }
+});
 
 new Vue({
   router,
@@ -28,4 +39,6 @@ new Vue({
   vuetify: new Vuetify(vuetifyOptions),
   render: h => h(App),
 }).$mount('#app');
+
+// https://webdevblog.ru/autentifikacii-v-vue-s-ispolzovaniem-vuex/
 

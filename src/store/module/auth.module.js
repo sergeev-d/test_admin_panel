@@ -58,16 +58,15 @@ const actions = {
   //   });
   // },
   [CHECK_AUTH](context) {
-    if (JwtService.getToken()) {
+    if (JwtService.getToken() !== 'undefined' && JwtService.getToken() != null) {
       ApiService.setHeader();
-      ApiService.query("user")
+      ApiService.query("userinfo")
         .then(({ data }) => {
-          context.commit(SET_USER, data.user);
+          context.commit(SET_USER, data);
         })
         .catch(({ response }) => {
           context.commit(SET_ERROR, response.data.errors);
         });
-
     } else {
       context.commit(PURGE_AUTH);
     }
