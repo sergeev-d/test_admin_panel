@@ -20,7 +20,7 @@
                                     dark
                                     flat
                             >
-                                <v-toolbar-title>Rivkat's Monitoring Tool</v-toolbar-title>
+                                <v-toolbar-title>Monitoring Tool</v-toolbar-title>
                             </v-toolbar>
                             <v-card-text>
                                 <v-form>

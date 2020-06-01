@@ -202,12 +202,17 @@
                                     labelString: 'Date'
                                 }
                             },
-                            y: {
+                            yAxes: [{
                                 scaleLabel: {
                                     display: true,
                                     labelString: 'value'
-                                }
-                            }
+                                },
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: 100
+                                },
+                                beginAtZero: true,
+                            }]
                         },
                     }
                 });
