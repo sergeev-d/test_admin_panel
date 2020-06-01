@@ -32,7 +32,10 @@
             <v-btn color="blue darken-1" text @click="fillData">Show Graph</v-btn>
             <v-btn color="blue darken-1" text @click="closeGraph">Close Graph</v-btn>
         </v-toolbar>
-        <canvas ref="myChart" width=800px height=600px></canvas>
+        <v-responsive height="400" width="800" max-height="800" max-width="1000">
+            <canvas ref="myChart"></canvas>
+        </v-responsive>
+
     </div>
 </template>
 
