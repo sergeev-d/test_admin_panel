@@ -205,7 +205,7 @@
                             yAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: 'value'
+                                    labelString: 'percent'
                                 },
                                 ticks: {
                                     suggestedMin: 0,
